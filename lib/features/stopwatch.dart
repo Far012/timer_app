@@ -27,7 +27,7 @@ class StopwatchPageState extends State<StopwatchWidget> {
       ),
 
       body: Container(
-        color: Color(0xFF333333),
+        color: Color.fromARGB(255, 82, 82, 82),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(

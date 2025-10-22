@@ -12,13 +12,12 @@ class TimerWidget extends StatefulWidget {
 class TimerPageState extends State<TimerWidget> {
   int _seconds = 0;
   int _remaining = 0;
-  Timer? _timer;
   bool _isRunning = false;
   BuildContext? _context;
 
   @override
   Widget build(BuildContext context) {
-    // Formatiere Zeit in MM:SS
+    // Formatiert Zeit in MM:SS
     final minutes = (_remaining ~/ 60).toString().padLeft(2, "0");
     final seconds = (_remaining % 60).toString().padLeft(2, "0");
 
@@ -32,7 +31,7 @@ class TimerPageState extends State<TimerWidget> {
       ),
 
       body: Container(
-        color: Color(0xFF333333),
+        color: Color.fromARGB(255, 82, 82, 82),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
@@ -101,7 +100,7 @@ class TimerPageState extends State<TimerWidget> {
   @override
   void initState() {
     super.initState();
-    // Speichere Context für spätere Verwendung in Timer-Callback
+    // Speichert Timer-Context für SnackBar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _context = context;
     });
@@ -115,37 +114,34 @@ class TimerPageState extends State<TimerWidget> {
       _isRunning = true;
     });
 
-    // Periodischer Timer, der jede Sekunde die Zeit dekrementiert
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_remaining <= 1) {
-        timer.cancel();
-        setState(() {
-          _isRunning = false;
-          _remaining = 0;
-        });
-        // SnackBar bei Ablauf
-        ScaffoldMessenger.of(_context!).showSnackBar(
-          SnackBar(
-            content: Text("Timer abgelaufen!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else {
-        setState(() => _remaining--);
-      }
-    });
+    while (_isRunning && _remaining > 0) {
+      await Future.delayed(const Duration(seconds: 1));
+      if (!_isRunning) break;
+      setState(() => _remaining--);
+    }
+
+    if (_remaining <= 0) {
+      setState(() {
+        _isRunning = false;
+        _remaining = 0;
+      });
+      // SnackBar bei Ablauf
+      ScaffoldMessenger.of(_context!).showSnackBar(
+        SnackBar(
+          content: Text("Timer abgelaufen!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   // Timer stop
   void _stopTimer() {
-    _timer?.cancel();
     setState(() => _isRunning = false);
   }
 
   // Timer zurück
   void _resetTimer() {
-    _timer?.cancel();
-    _timer = null;
     setState(() {
       _remaining = 0;
       _isRunning = false;
