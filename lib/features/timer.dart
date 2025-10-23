@@ -100,7 +100,7 @@ class TimerPageState extends State<TimerWidget> {
   @override
   void initState() {
     super.initState();
-    // Speichert Timer-Context für SnackBar
+    // Speichert Timer-Kontext
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _context = context;
     });
