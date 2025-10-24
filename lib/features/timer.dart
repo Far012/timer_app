@@ -18,7 +18,8 @@ class TimerPageState extends State<TimerWidget> {
   @override
   Widget build(BuildContext context) {
     // Formatiert Zeit in MM:SS
-    final minutes = (_remaining ~/ 60).toString().padLeft(2, "0");
+    final hours = (_remaining ~/ 3600).toString().padLeft(2, "0");
+    final minutes = ((_remaining % 3600) ~/ 60).toString().padLeft(2, "0");
     final seconds = (_remaining % 60).toString().padLeft(2, "0");
 
     return Scaffold(
@@ -52,7 +53,7 @@ class TimerPageState extends State<TimerWidget> {
               SizedBox(height: 20),
               // Timer
               Text(
-                "$minutes:$seconds",
+                "$hours:$minutes:$seconds",
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
